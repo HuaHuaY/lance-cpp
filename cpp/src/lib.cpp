@@ -17,10 +17,14 @@
  * under the License.
  */
 
-#include <lance/lance.hpp>
+#include <lance_cxxbridge/lib.h>
 
-int main() {
-  lance::init();
-  lance::cleanup();
-  return 0;
-}
+#include "lance/lance.hpp"
+
+namespace lance {
+
+bool init() { return lance_init(); }
+
+void cleanup() { lance_cleanup(); }
+
+}  // namespace lance

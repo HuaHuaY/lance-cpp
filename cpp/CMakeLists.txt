@@ -1,46 +1,60 @@
-cmake_minimum_required(VERSION 3.16)
-project(lance-cpp)
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
 
-set(CMAKE_CXX_STANDARD 17)
+cmake_minimum_required(VERSION 3.25)
+
+list(PREPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules")
+
+project(lance-cpp
+        DESCRIPTION "C++ bindings for Lance Columnar format"
+        LANGUAGES CXX)
+set(PROJECT_VERSION "1.1.0-beta.0")
+
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-# Find Arrow
-find_package(Arrow REQUIRED)
-find_package(ArrowDataset REQUIRED)
+option(LANCE_CPP_BUILD_STATIC "Build static library" ON)
+option(LANCE_CPP_BUILD_SHARED "Build shared library" ON)
+option(LANCE_CPP_BUILD_TESTS "Build lance-cpp tests" ON)
+option(LANCE_CPP_ENABLE_ASAN "Enable Address Sanitizer" OFF)
+option(LANCE_CPP_ENABLE_UBSAN "Enable Undefined Behavior Sanitizer" OFF)
 
-# Build Rust FFI library
-add_custom_target(lance_ffi ALL
-    COMMAND cargo build --release
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lance-cpp-ffi
-    COMMENT "Building Rust FFI library"
-)
+if(LANCE_CPP_BUILD_TESTS)
+  enable_testing()
+endif()
 
-# Include directories
-include_directories(include)
-include_directories(${ARROW_INCLUDE_DIR})
+include(CMakePackageConfigHelpers)
+include(FetchContent)
+include(GNUInstallDirs)
 
-# Source files
-set(SOURCES
-    src/file.cpp
-    src/dataset.cpp
-    src/scanner.cpp
-)
+set(LANCE_CPP_INSTALL_LIBDIR "${CMAKE_INSTALL_LIBDIR}")
+set(LANCE_CPP_INSTALL_INCLUDEDIR "${CMAKE_INSTALL_INCLUDEDIR}")
+set(LANCE_CPP_INSTALL_CONFIGDIR "${LANCE_CPP_INSTALL_LIBDIR}/cmake/LanceCpp")
 
-# Create library
-add_library(lance-cpp SHARED ${SOURCES})
+include(LanceSanitizer)
+include(ThirdpartyToolchain)
 
-# Link libraries
-target_link_libraries(lance-cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/lance-cpp-ffi/target/release/liblance_cpp_ffi.a
-    ${ARROW_SHARED_LIB}
-    ${ARROW_DATASET_SHARED_LIB}
-    pthread
-    dl
-)
+add_subdirectory(lance-ffi)
+add_subdirectory(src)
 
-# Add dependency on Rust build
-add_dependencies(lance-cpp lance_ffi)
-
-# Install
-install(TARGETS lance-cpp DESTINATION lib)
-install(DIRECTORY include/ DESTINATION include)
+if(LANCE_CPP_BUILD_TESTS)
+  add_subdirectory(tests)
+endif()

@@ -16,11 +16,3 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-#include <lance/lance.hpp>
-
-int main() {
-  lance::init();
-  lance::cleanup();
-  return 0;
-}

@@ -1,0 +1,28 @@
+[package]
+name = "lance-cpp-crate"
+version = "1.1.0-beta.0"
+edition = "2021"
+authors = ["Lance Devs <dev@lance.org>"]
+license = "Apache-2.0"
+repository = "https://github.com/lance-format/lance"
+readme = "../../README.md"
+description = "C++ bindings for Lance Columnar format"
+
+[lib]
+crate-type = ["staticlib"]
+
+[dependencies]
+cxx = "1.0"
+
+lance = { path = "../../rust/lance" }
+lance-arrow = { path = "../../rust/lance-arrow" }
+lance-core = { path = "../../rust/lance-core" }
+lance-file = { path = "../../rust/lance-file" }
+lance-io = { path = "../../rust/lance-io" }
+lance-table = { path = "../../rust/lance-table" }
+lance-encoding = { path = "../../rust/lance-encoding" }
+
+arrow = { version = "56.1", features = ["ffi"] }
+tokio = { version = "1.23", features = ["rt-multi-thread"] }
+
+object_store = { version = "0.12.3" }

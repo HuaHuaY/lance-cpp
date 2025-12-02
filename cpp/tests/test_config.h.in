@@ -17,10 +17,6 @@
  * under the License.
  */
 
-#include <lance/lance.hpp>
+#pragma once
 
-int main() {
-  lance::init();
-  lance::cleanup();
-  return 0;
-}
+#define LANCE_CPP_TEST_RESOURCES "@LANCE_CPP_TEST_RESOURCES@"

@@ -17,10 +17,17 @@
  * under the License.
  */
 
-#include <lance/lance.hpp>
+#include <gtest/gtest.h>
 
-int main() {
-  lance::init();
-  lance::cleanup();
-  return 0;
-}
+#include "lance/lance.hpp"
+
+class LanceFileTest : public ::testing::Test {
+ protected:
+  void SetUp() override { lance::init(); }
+
+  void TearDown() override { lance::cleanup(); }
+};
+
+TEST_F(LanceFileTest, BasicReadWrite) {}
+
+TEST_F(LanceFileTest, SchemaOnly) {}

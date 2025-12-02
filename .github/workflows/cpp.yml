@@ -1,0 +1,77 @@
+name: C++ Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    paths:
+      - cpp/**
+      - rust/**
+      - .github/workflows/cpp.yml
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  test-debug:
+    name: Ubuntu 24.04 Debug
+    runs-on: ubuntu-24.04
+    steps:
+    - uses: actions/checkout@v5
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y protobuf-compiler libssl-dev
+    - name: Build LanceCpp
+      run: |
+        cd cpp
+        mkdir /tmp/lance-cpp
+        mkdir -p build/debug && cd build/debug
+        cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=gcc-14 -DCMAKE_CXX_COMPILER=g++-14 -DCMAKE_INSTALL_PREFIX=/tmp/lance-cpp -GNinja ../..
+        cmake --build . --config Debug --target install -- -j$(nproc)
+        ctest --output-on-failure
+    - uses: cpp-linter/cpp-linter-action@v2
+      id: linter
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        style: 'file'
+        tidy-checks: ''
+        version: 22
+        database: cpp/build/debug
+        files-changed-only: true
+        lines-changed-only: true
+        thread-comments: true
+        verbosity: 'debug'
+        # need '-fno-builtin-std-forward_like', see https://github.com/llvm/llvm-project/issues/101614
+        extra-args: '-std=c++23 -I$PWD/cpp/include -I$PWD/cpp/src -fno-builtin-std-forward_like'
+
+  test-release:
+    name: Ubuntu 24.04 Release
+    runs-on: ubuntu-24.04
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y protobuf-compiler libssl-dev
+    - name: Build LanceCpp
+      run: |
+        cd cpp
+        mkdir /tmp/lance-cpp
+        mkdir -p build/release && cd build/release
+        cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=gcc-14 -DCMAKE_CXX_COMPILER=g++-14 -DCMAKE_INSTALL_PREFIX=/tmp/lance-cpp -GNinja ../..
+        cmake --build . --config Release --target install -- -j$(nproc)
+        ctest --output-on-failure
+    - name: Build Example
+      run: |
+        cd cpp/examples
+        mkdir build && cd build
+        cmake -DCMAKE_C_COMPILER=gcc-14 -DCMAKE_CXX_COMPILER=g++-14 -DCMAKE_PREFIX_PATH=/tmp/lance-cpp -GNinja ..
+        cmake --build . -- -j$(nproc)
+        ./basic_usage_shared
+        ./basic_usage_static
+
+
