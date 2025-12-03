@@ -1,0 +1,3 @@
+[submodule "lance"]
+	path = lance
+	url = git@github.com:lance-format/lance.git
