@@ -2,12 +2,18 @@
 // SPDX-FileCopyrightText: Copyright The Lance Authors
 
 use std::sync::LazyLock;
+
+use lance_core::Result as LanceResult;
 use tokio::runtime::Runtime;
+
+pub(crate) mod dataset;
+
+use crate::dataset::Dataset;
 
 #[cxx::bridge]
 mod ffi {
     extern "Rust" {
-        fn lance_init() -> bool;
+        fn lance_init(path: &str) -> Result<bool>;
         fn lance_cleanup();
     }
 }
@@ -16,10 +22,11 @@ mod ffi {
 static RT: LazyLock<Runtime> =
     LazyLock::new(|| Runtime::new().expect("Failed to create tokio runtime"));
 
-pub fn lance_init() -> bool {
+pub fn lance_init(path: &str) -> LanceResult<bool> {
     // Initialize the runtime
     LazyLock::force(&RT);
-    true
+    _ = Dataset::new(path)?;
+    Ok(true)
 }
 
 pub fn lance_cleanup() {

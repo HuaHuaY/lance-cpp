@@ -1,9 +1,21 @@
 repos:
+  - repo: https://github.com/doublify/pre-commit-rust
+    rev: v1.0
+    hooks:
+    - id: fmt
+      files: ^lance-ffi/
+      args: ['--manifest-path', 'lance-ffi/Cargo.toml', "--"]
+    - id: cargo-check
+      files: ^lance-ffi/
+      args: ['--manifest-path', 'lance-ffi/Cargo.toml', "--"]
+    - id: clippy
+      files: ^lance-ffi/
+      args: ['--manifest-path', 'lance-ffi/Cargo.toml', "--", "-D", "warnings"]
+
   - repo: https://github.com/pre-commit/mirrors-clang-format
     rev: v21.1.6
     hooks:
       - id: clang-format
-        exclude_types: [json]
 
   - repo: https://github.com/cheshirekow/cmake-format-precommit
     rev: v0.6.13

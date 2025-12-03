@@ -18,12 +18,23 @@
  */
 
 #include <lance_cxxbridge/lib.h>
+#include <rust/cxx.h>
+
+#include <iostream>
 
 #include "lance/lance.hpp"
 
 namespace lance {
 
-bool init() { return lance_init(); }
+bool init() {
+  bool result = false;
+  try {
+    result = lance_init(rust::Str(""));
+  } catch (const rust::Error& err) {
+    std::cout << err.what() << std::endl;
+  }
+  return result;
+}
 
 void cleanup() { lance_cleanup(); }
 
