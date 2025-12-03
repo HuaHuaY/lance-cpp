@@ -19,12 +19,11 @@ mod ffi {
 }
 
 // Global runtime for async operations
-static RT: LazyLock<Runtime> =
+pub(crate) static RT: LazyLock<Runtime> =
     LazyLock::new(|| Runtime::new().expect("Failed to create tokio runtime"));
 
 pub fn lance_init(path: &str) -> LanceResult<bool> {
     // Initialize the runtime
-    LazyLock::force(&RT);
     _ = Dataset::new(path)?;
     Ok(true)
 }

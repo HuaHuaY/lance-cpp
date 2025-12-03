@@ -33,6 +33,11 @@ if(MSVC)
   corrosion_set_env_vars(cxxbridge_crate "CFLAGS=-MDd" "CXXFLAGS=-MDd")
 endif()
 
-corrosion_install(TARGETS lance_cpp_crate EXPORT LanceCppTargets)
+corrosion_install(TARGETS
+                  lance_cpp_crate
+                  EXPORT
+                  LanceCppTargets
+                  DESTINATION
+                  ${LANCE_CPP_INSTALL_LIBDIR})
 install(FILES ${CMAKE_BINARY_DIR}/corrosion/LanceCppTargetsCorrosion.cmake
         DESTINATION ${LANCE_CPP_INSTALL_CONFIGDIR})
