@@ -1,0 +1,69 @@
+name: C++ Test
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  test-debug:
+    name: Ubuntu 24.04 Debug
+    runs-on: ubuntu-24.04
+    steps:
+    - uses: actions/checkout@v5
+      with:
+        submodules: true
+    - name: Install dependencies
+      run: sudo apt update && sudo apt install -y protobuf-compiler libssl-dev
+    - name: Build LanceCpp
+      run: |
+        mkdir /tmp/lance-cpp
+        mkdir -p build/debug && cd build/debug
+        cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=gcc-14 -DCMAKE_CXX_COMPILER=g++-14 \
+              -DCMAKE_INSTALL_PREFIX=/tmp/lance-cpp -GNinja ../..
+        cmake --build . --config Debug --target install -- -j$(nproc)
+    - name: Test
+      working-directory: build/debug
+      run: |
+        ctest --output-on-failure
+    - name: Build Example
+      working-directory: examples
+      run: |
+        mkdir build && cd build
+        cmake -DCMAKE_C_COMPILER=gcc-14 -DCMAKE_CXX_COMPILER=g++-14 \
+              -DCMAKE_PREFIX_PATH=/tmp/lance-cpp -GNinja ..
+        cmake --build . -- -j$(nproc)
+        ./basic_usage_shared && ./basic_usage_static
+  test-release:
+    name: Ubuntu 24.04 Release
+    runs-on: ubuntu-24.04
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: true
+    - name: Install dependencies
+      run: sudo apt update && sudo apt install -y protobuf-compiler libssl-dev
+    - name: Build LanceCpp
+      run: |
+        mkdir /tmp/lance-cpp
+        mkdir -p build/release && cd build/release
+        cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=gcc-14 -DCMAKE_CXX_COMPILER=g++-14 \
+              -DCMAKE_INSTALL_PREFIX=/tmp/lance-cpp -GNinja ../..
+        cmake --build . --config Release --target install -- -j$(nproc)
+    - name: Test
+      working-directory: build/release
+      run: |
+        ctest --output-on-failure
+    - name: Build Example
+      working-directory: examples
+      run: |
+        mkdir build && cd build
+        cmake -DCMAKE_C_COMPILER=gcc-14 -DCMAKE_CXX_COMPILER=g++-14 \
+              -DCMAKE_PREFIX_PATH=/tmp/lance-cpp -GNinja ..
+        cmake --build . -- -j$(nproc)
+        ./basic_usage_shared && ./basic_usage_static
+
+

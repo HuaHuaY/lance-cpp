@@ -1,0 +1,32 @@
+name: C++ Sanitizer Test
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  test-debug:
+    name: Ubuntu 24.04 Debug
+    runs-on: ubuntu-24.04
+    steps:
+    - uses: actions/checkout@v5
+      with:
+        submodules: true
+    - name: Install dependencies
+      run: sudo apt update && sudo apt install -y protobuf-compiler libssl-dev
+    - name: Build LanceCpp
+      run: |
+        mkdir /tmp/lance-cpp
+        mkdir -p build/debug && cd build/debug
+        cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=gcc-14 -DCMAKE_CXX_COMPILER=g++-14 \
+              -DCMAKE_INSTALL_PREFIX=/tmp/lance-cpp -DLANCE_CPP_ENABLE_ASAN=ON \
+              -DLANCE_CPP_ENABLE_UBSAN=ON -GNinja ../..
+        cmake --build . --config Debug -- -j$(nproc)
+    - name: Test
+      working-directory: build/debug
+      run: |
+        ctest --output-on-failure
