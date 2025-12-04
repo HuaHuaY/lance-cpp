@@ -22,7 +22,7 @@ list(PREPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules")
 project(lance-cpp
         DESCRIPTION "C++ bindings for Lance Columnar format"
         LANGUAGES CXX)
-set(PROJECT_VERSION "1.1.0-beta.0")
+set(PROJECT_VERSION "1.1.0-beta.2")
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
