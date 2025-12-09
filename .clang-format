@@ -1,4 +1,11 @@
 ---
-Language:   Cpp
-BaseOnStyle:    Google
-ColumnLimit:    100
+Language: Cpp
+BasedOnStyle: Google
+
+BreakAfterReturnType: Automatic
+ColumnLimit: 100
+DerivePointerAlignment: false
+IncludeBlocks: Regroup
+IndentAccessModifiers: false
+IndentPPDirectives: BeforeHash
+PointerAlignment: Left
