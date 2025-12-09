@@ -23,11 +23,12 @@
 #include <string>
 #include <unordered_map>
 
+#include "lance/export.hpp"
 #include "lance/result.hpp"
 
 namespace lance {
 
-class Dataset {
+class LANCE_EXPORT Dataset {
  public:
   ~Dataset();
 

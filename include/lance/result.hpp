@@ -25,6 +25,8 @@
 #include <string_view>
 #include <utility>
 
+#include "lance/export.hpp"
+
 namespace lance {
 
 enum class ErrorKind {
@@ -43,7 +45,7 @@ constexpr auto ToString(const ErrorKind& kind) -> std::string_view {
   }
 }
 
-class [[nodiscard]] Error {
+class LANCE_EXPORT [[nodiscard]] Error {
  public:
   template <ErrorKind K, typename... Args>
   static auto Make(const std::format_string<Args...> fmt, Args&&... args) -> Error {
@@ -58,7 +60,7 @@ class [[nodiscard]] Error {
   template <typename E>
   static auto From(E&& e) -> Error;
 
-  auto ToString() const -> std::string {
+  [[nodiscard]] auto ToString() const -> std::string {
     return std::format("[{}] {}", lance::ToString(kind_), message_);
   }
 

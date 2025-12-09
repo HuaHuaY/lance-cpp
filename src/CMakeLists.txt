@@ -26,6 +26,9 @@ if(LANCE_CPP_BUILD_STATIC)
                              PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
                                     $<INSTALL_INTERFACE:${LANCE_CPP_INSTALL_INCLUDEDIR}>)
   target_include_directories(lance_cpp_static SYSTEM PRIVATE ${LANCE_CXXBRIDGE_INCS})
+  if(WIN32)
+    target_compile_definitions(lance_cpp_static PRIVATE LANCE_STATIC)
+  endif()
   install(TARGETS lance_cpp_static lance_cxxbridge lance_sanitizer_flags
           EXPORT LanceCppTargets
           DESTINATION ${LANCE_CPP_INSTALL_LIBDIR})
@@ -40,6 +43,11 @@ if(LANCE_CPP_BUILD_SHARED)
                              PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
                                     $<INSTALL_INTERFACE:${LANCE_CPP_INSTALL_INCLUDEDIR}>)
   target_include_directories(lance_cpp_shared SYSTEM PRIVATE ${LANCE_CXXBRIDGE_INCS})
+  target_compile_definitions(lance_cpp_shared PRIVATE LANCE_EXPORTING)
+  set_target_properties(lance_cpp_shared
+                        PROPERTIES C_VISIBILITY_PRESET hidden
+                                   CXX_VISIBILITY_PRESET hidden
+                                   VISIBILITY_INLINES_HIDDEN 1)
   install(TARGETS lance_cpp_shared
           EXPORT LanceCppTargets
           DESTINATION ${LANCE_CPP_INSTALL_LIBDIR})

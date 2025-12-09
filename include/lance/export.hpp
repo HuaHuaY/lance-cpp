@@ -17,24 +17,20 @@
  * under the License.
  */
 
-#include "lance/dataset.hpp"
+#pragma once
 
-#include <gtest/gtest.h>
-
-namespace lance {
-
-class LanceFileTest : public ::testing::Test {
- protected:
-  void SetUp() override {
-    auto result = Dataset::Open("", {});
-    ASSERT_TRUE(result.has_value());
-  }
-
-  void TearDown() override {}
-};
-
-TEST_F(LanceFileTest, BasicReadWrite) {}
-
-TEST_F(LanceFileTest, SchemaOnly) {}
-
-}  // namespace lance
+#if defined(_WIN32) || defined(__CYGWIN__)
+  #ifdef LANCE_STATIC
+    #define LANCE_EXPORT
+  #elif defined(LANCE_EXPORTING)
+    #define LANCE_EXPORT __declspec(dllexport)
+  #else
+    #define LANCE_EXPORT __declspec(dllimport)
+  #endif
+#else
+  #ifdef LANCE_EXPORTING
+    #define LANCE_EXPORT __attribute__((visibility("default")))
+  #else
+    #define LANCE_EXPORT
+  #endif
+#endif

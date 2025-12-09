@@ -17,9 +17,12 @@
  * under the License.
  */
 
+#include <cassert>
+
 #include <lance/dataset.hpp>
 
-int main() {
-  auto _ = lance::Dataset::Open("", {});
+auto main() -> int {
+  auto result = lance::Dataset::Open("", {});
+  assert(result.has_value());
   return 0;
 }

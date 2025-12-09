@@ -5,7 +5,7 @@ BasedOnStyle: Google
 BreakAfterReturnType: Automatic
 ColumnLimit: 100
 DerivePointerAlignment: false
-IncludeBlocks: Regroup
+IncludeBlocks: Preserve
 IndentAccessModifiers: false
 IndentPPDirectives: BeforeHash
 PointerAlignment: Left
