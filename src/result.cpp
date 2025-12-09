@@ -17,6 +17,15 @@
  * under the License.
  */
 
-#pragma once
+#include "lance/result.hpp"
 
-namespace lance {}  // namespace lance
+#include <rust/cxx.h>
+
+namespace lance {
+
+template <>
+auto Error::From<const rust::Error&>(const rust::Error& e) -> Error {
+  return Error::Make<ErrorKind::FFIError>("{}", e.what());
+}
+
+}  // namespace lance

@@ -17,10 +17,9 @@
  * under the License.
  */
 
-#include <lance/lance.hpp>
+#include <lance/dataset.hpp>
 
 int main() {
-  lance::init();
-  lance::cleanup();
+  auto _ = lance::Dataset::Open("", {});
   return 0;
 }

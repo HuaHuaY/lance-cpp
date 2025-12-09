@@ -19,4 +19,27 @@
 
 #pragma once
 
-namespace lance {}  // namespace lance
+#include <memory>
+#include <string>
+#include <unordered_map>
+
+#include "lance/result.hpp"
+
+namespace lance {
+
+class Dataset {
+ public:
+  ~Dataset();
+
+  static auto Open(const std::string& path,
+                   const std::unordered_map<std::string, std::string>& storage_options)
+      -> Result<Dataset>;
+
+ private:
+  class Impl;
+  std::unique_ptr<Impl> impl_;
+
+  explicit Dataset(std::unique_ptr<Impl> impl);
+};
+
+}  // namespace lance

@@ -17,17 +17,21 @@
  * under the License.
  */
 
+#include "lance/dataset.hpp"
+
 #include <gtest/gtest.h>
 
-#include "lance/lance.hpp"
+namespace lance {
 
 class LanceFileTest : public ::testing::Test {
  protected:
-  void SetUp() override { lance::init(); }
+  void SetUp() override { auto _ = Dataset::Open("", {}); }
 
-  void TearDown() override { lance::cleanup(); }
+  void TearDown() override {}
 };
 
 TEST_F(LanceFileTest, BasicReadWrite) {}
 
 TEST_F(LanceFileTest, SchemaOnly) {}
+
+}  // namespace lance

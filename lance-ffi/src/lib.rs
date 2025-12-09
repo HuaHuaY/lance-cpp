@@ -3,31 +3,28 @@
 
 use std::sync::LazyLock;
 
-use lance_core::Result as LanceResult;
-use tokio::runtime::Runtime;
-
 pub(crate) mod dataset;
+pub(crate) mod utils;
 
-use crate::dataset::Dataset;
+use crate::dataset::BlockingDataset;
 
-#[cxx::bridge]
+pub(crate) static RT: LazyLock<tokio::runtime::Runtime> = LazyLock::new(|| {
+    tokio::runtime::Builder::new_multi_thread()
+        .enable_all()
+        .build()
+        .expect("Failed to create tokio runtime")
+});
+
+#[cxx::bridge(namespace = "lance_ffi")]
 mod ffi {
-    extern "Rust" {
-        fn lance_init(path: &str) -> Result<bool>;
-        fn lance_cleanup();
+    pub struct KV {
+        pub key: String,
+        pub value: String,
     }
-}
 
-// Global runtime for async operations
-pub(crate) static RT: LazyLock<Runtime> =
-    LazyLock::new(|| Runtime::new().expect("Failed to create tokio runtime"));
-
-pub fn lance_init(path: &str) -> LanceResult<bool> {
-    // Initialize the runtime
-    _ = Dataset::new(path)?;
-    Ok(true)
-}
-
-pub fn lance_cleanup() {
-    // Cleanup if needed
+    extern "Rust" {
+        type BlockingDataset;
+        #[Self = "BlockingDataset"]
+        pub fn open(path: &str, storage_options: Vec<KV>) -> Result<Box<BlockingDataset>>;
+    }
 }

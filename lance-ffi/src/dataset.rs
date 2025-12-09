@@ -1,17 +1,23 @@
-use std::sync::Arc;
+// SPDX-License-Identifier: Apache-2.0
+// SPDX-FileCopyrightText: Copyright The Lance Authors
 
-use lance::dataset::Dataset as LanceDataset;
-use lance_core::Result as LanceResult;
+use lance::dataset::Dataset;
+use lance::dataset::builder::DatasetBuilder;
+use lance_core::Result;
 
 use crate::RT;
+use crate::ffi::KV;
+use crate::utils::IntoHashMap;
 
-pub struct Dataset {
-    _ds: Arc<LanceDataset>,
+pub struct BlockingDataset {
+    _inner: Dataset,
 }
 
-impl Dataset {
-    pub fn new(path: &str) -> LanceResult<Self> {
-        let ds = Arc::new(RT.block_on(LanceDataset::open(path))?);
-        Ok(Dataset { _ds: ds })
+impl BlockingDataset {
+    pub fn open(path: &str, storage_options: Vec<KV>) -> Result<Box<Self>> {
+        let builder =
+            DatasetBuilder::from_uri(path).with_storage_options(storage_options.into_hashmap());
+        let inner = RT.block_on(builder.load())?;
+        Ok(Box::new(Self { _inner: inner }))
     }
 }

@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-set(LANCE_CPP_SOURCES lib.cpp)
+set(LANCE_CPP_SOURCES dataset.cpp lib.cpp result.cpp)
 
 get_target_property(LANCE_CXXBRIDGE_INCS lance_cxxbridge INTERFACE_INCLUDE_DIRECTORIES)
 
