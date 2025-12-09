@@ -1,1 +1,4 @@
-lance/.clang-format
+---
+Language:   Cpp
+BaseOnStyle:    Google
+ColumnLimit:    100

@@ -1,1 +1,15 @@
-lance/.clang-tidy
+---
+Checks: |
+  -*,
+  clang-*,
+  google-*,
+  modernize-*,
+  modernize-use-trailing-return-type,
+  readability-*,
+  -readability-identifier-length,
+
+CheckOptions:
+  - key:    modernize-use-scoped-lock.WarnOnSingleLocks
+    value:  'false'
+
+HeaderFilterRegex: ''
