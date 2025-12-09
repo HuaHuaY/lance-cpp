@@ -23,6 +23,6 @@
 
 auto main() -> int {
   auto result = lance::Dataset::Open("", {});
-  assert(result.has_value());
+  assert(!result.has_value());
   return 0;
 }

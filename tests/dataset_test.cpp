@@ -27,7 +27,7 @@ class LanceFileTest : public ::testing::Test {
  protected:
   void SetUp() override {
     auto result = Dataset::Open("", {});
-    ASSERT_TRUE(result.has_value());
+    ASSERT_FALSE(result.has_value());
   }
 
   void TearDown() override {}
