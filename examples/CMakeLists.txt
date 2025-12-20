@@ -25,17 +25,17 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
 
-option(LANCE_CPP_BUILD_STATIC_TEST "Build static library test" ON)
-option(LANCE_CPP_BUILD_SHARED_TEST "Build shared library test" ON)
+option(LANCE_CPP_BUILD_STATIC_EXAMPLES "Build static library examples" ON)
+option(LANCE_CPP_BUILD_SHARED_EXAMPLES "Build shared library examples" ON)
 
 find_package(LanceCpp CONFIG REQUIRED)
 
-if(LANCE_CPP_BUILD_STATIC_TEST)
+if(LANCE_CPP_BUILD_STATIC_EXAMPLES)
   add_executable(basic_usage_static basic_usage.cpp)
   target_link_libraries(basic_usage_static PRIVATE LanceCpp::lance_cpp_static)
 endif()
 
-if(LANCE_CPP_BUILD_SHARED_TEST)
+if(LANCE_CPP_BUILD_SHARED_EXAMPLES)
   add_executable(basic_usage_shared basic_usage.cpp)
   target_link_libraries(basic_usage_shared PRIVATE LanceCpp::lance_cpp_shared)
 endif()
