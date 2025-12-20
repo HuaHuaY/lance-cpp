@@ -50,11 +50,9 @@ if(LANCE_CPP_BUILD_SHARED)
                                    VISIBILITY_INLINES_HIDDEN 1)
 
   include(CheckLinkerFlag)
-  check_linker_flag(CXX "-Wl,--exclude-libs,ALL -Wl,-Bsymbolic"
-                    CXX_LINKER_SUPPORTS_VERSION_SCRIPT)
-  if(CXX_LINKER_SUPPORTS_VERSION_SCRIPT)
-    set_target_properties(lance_cpp_shared
-                          PROPERTIES LINK_FLAGS "-Wl,--exclude-libs,ALL -Wl,-Bsymbolic")
+  check_linker_flag(CXX "-Wl,--exclude-libs,ALL" CXX_LINKER_SUPPORTS_EXCLUDE_LIBS)
+  if(CXX_LINKER_SUPPORTS_EXCLUDE_LIBS)
+    set_target_properties(lance_cpp_shared PROPERTIES LINK_FLAGS "-Wl,--exclude-libs,ALL")
   endif()
   install(TARGETS lance_cpp_shared
           EXPORT LanceCppTargets
