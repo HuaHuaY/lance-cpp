@@ -18,6 +18,9 @@
 @PACKAGE_INIT@
 
 set(LANCE_CPP_SYSTEM_DEPENDENCIES "@LANCE_CPP_SYSTEM_DEPENDENCIES@")
+foreach(dependency ${LANCE_CPP_SYSTEM_DEPENDENCIES})
+  find_package(${dependency} REQUIRED)
+endforeach()
 
 include(${CMAKE_CURRENT_LIST_DIR}/LanceCppTargets.cmake)
 

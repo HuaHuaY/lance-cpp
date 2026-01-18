@@ -37,7 +37,8 @@ function(add_lance_cpp_test TEST_NAME)
 
   add_executable(${TEST_NAME} ${ARG_SOURCES})
   target_include_directories(${TEST_NAME} PRIVATE ${LANCE_CPP_TEST_RESOURCES_HEADER_DIR})
-  target_link_libraries(${TEST_NAME} PRIVATE GTest::gtest_main)
+  target_link_libraries(${TEST_NAME} PRIVATE GTest::gtest_main
+                                             ${LANCE_CPP_VENDOR_DEPENDENCIES})
   if(LANCE_CPP_BUILD_SHARED)
     target_link_libraries(${TEST_NAME} PRIVATE lance_cpp_shared)
   else()

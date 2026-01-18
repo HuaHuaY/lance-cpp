@@ -21,7 +21,9 @@ get_target_property(LANCE_CXXBRIDGE_INCS lance_cxxbridge INTERFACE_INCLUDE_DIREC
 
 if(LANCE_CPP_BUILD_STATIC)
   add_library(lance_cpp_static STATIC ${LANCE_CPP_SOURCES})
-  target_link_libraries(lance_cpp_static PUBLIC lance_sanitizer_flags lance_cxxbridge)
+  target_link_libraries(lance_cpp_static
+                        PUBLIC lance_sanitizer_flags lance_cxxbridge
+                        PRIVATE ${LANCE_CPP_VENDOR_DEPENDENCIES})
   target_include_directories(lance_cpp_static
                              PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
                                     $<INSTALL_INTERFACE:${LANCE_CPP_INSTALL_INCLUDEDIR}>)
@@ -38,7 +40,7 @@ if(LANCE_CPP_BUILD_SHARED)
   add_library(lance_cpp_shared SHARED ${LANCE_CPP_SOURCES})
   target_link_libraries(lance_cpp_shared
                         PUBLIC lance_sanitizer_flags
-                        PRIVATE lance_cxxbridge)
+                        PRIVATE lance_cxxbridge ${LANCE_CPP_VENDOR_DEPENDENCIES})
   target_include_directories(lance_cpp_shared
                              PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
                                     $<INSTALL_INTERFACE:${LANCE_CPP_INSTALL_INCLUDEDIR}>)
