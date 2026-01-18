@@ -19,37 +19,4 @@
 
 #pragma once
 
-#include <memory>
-#include <string>
-#include <string_view>
-#include <unordered_map>
-
-#include "lance/export.hpp"
-#include "lance/result.hpp"
-
 struct ArrowSchema;
-
-namespace lance {
-
-class LANCE_EXPORT Dataset {
- public:
-  ~Dataset();
-  Dataset(const Dataset&) = delete;
-  auto operator=(const Dataset&) -> Dataset& = delete;
-  Dataset(Dataset&&) noexcept;
-  auto operator=(Dataset&&) noexcept -> Dataset&;
-
-  static auto Open(std::string_view uri,
-                   const std::unordered_map<std::string, std::string>& storage_options)
-      -> Result<Dataset>;
-
-  static auto Create(std::string_view uri, ArrowSchema& schema) -> Result<Dataset>;
-
- private:
-  class Impl;
-  std::unique_ptr<Impl> impl_;
-
-  explicit Dataset(std::unique_ptr<Impl> impl);
-};
-
-}  // namespace lance

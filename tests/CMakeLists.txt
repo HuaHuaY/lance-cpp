@@ -46,4 +46,4 @@ function(add_lance_cpp_test TEST_NAME)
   add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
 endfunction()
 
-add_lance_cpp_test(dataset_test SOURCES dataset_test.cpp)
+add_lance_cpp_test(dataset_test SOURCES util/test_util.cpp dataset_test.cpp)

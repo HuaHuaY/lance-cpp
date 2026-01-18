@@ -20,7 +20,7 @@ lance-io = { path = "../lance/rust/lance-io" }
 lance-table = { path = "../lance/rust/lance-table" }
 lance-encoding = { path = "../lance/rust/lance-encoding" }
 
-arrow = { version = "56.1", features = ["ffi"] }
+arrow = { version = "57.1", features = ["ffi"] }
 tokio = { version = "1.23", features = ["rt-multi-thread"] }
 
 object_store = { version = "0.12.3" }

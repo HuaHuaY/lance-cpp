@@ -21,9 +21,13 @@
 
 #include <gtest/gtest.h>
 
-namespace lance {
+#include <string>
 
-class LanceFileTest : public ::testing::Test {
+#include "util/test_util.hpp"
+
+namespace lance::test {
+
+class LanceDatasetTest : public ::testing::Test {
  protected:
   void SetUp() override {
     auto result = Dataset::Open("", {});
@@ -33,8 +37,13 @@ class LanceFileTest : public ::testing::Test {
   void TearDown() override {}
 };
 
-TEST_F(LanceFileTest, BasicReadWrite) {}
+TEST_F(LanceDatasetTest, TestCreateEmptyDataset) {
+  std::string test_path = "empty_dataset";
+  SimpleTestDataset test_dataset(test_path);
+  auto _ = test_dataset.createEmptyDataset();
 
-TEST_F(LanceFileTest, SchemaOnly) {}
+  auto result = Dataset::Open(test_path, {});
+  ASSERT_TRUE(result.has_value());
+}
 
-}  // namespace lance
+}  // namespace lance::test

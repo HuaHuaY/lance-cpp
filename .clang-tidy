@@ -23,6 +23,7 @@ Checks: |
   modernize-use-trailing-return-type,
   readability-*,
   -readability-identifier-length,
+  -readability-function-cognitive-complexity,
 
 CheckOptions:
   - key:    modernize-use-scoped-lock.WarnOnSingleLocks

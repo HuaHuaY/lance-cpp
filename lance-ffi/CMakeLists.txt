@@ -28,6 +28,8 @@ corrosion_add_cxxbridge(lance_cxxbridge
                         FILES
                         lib.rs)
 set_target_properties(lance_cxxbridge PROPERTIES INTERFACE_SOURCES "")
+target_include_directories(lance_cxxbridge
+                           PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>)
 
 if(MSVC)
   corrosion_set_env_vars(cxxbridge_crate "CFLAGS=-MDd" "CXXFLAGS=-MDd")
