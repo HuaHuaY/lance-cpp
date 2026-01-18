@@ -19,6 +19,8 @@ Language: Cpp
 BasedOnStyle: Google
 
 BreakAfterReturnType: Automatic
+BreakBeforeBinaryOperators: true
+BreakBinaryOperations: OnePerLine
 ColumnLimit: 100
 DerivePointerAlignment: false
 IncludeBlocks: Preserve
