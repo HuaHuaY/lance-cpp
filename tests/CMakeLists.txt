@@ -21,8 +21,7 @@ fetchcontent_declare(googletest
 fetchcontent_makeavailable(googletest)
 
 set(LANCE_CPP_TEST_RESOURCES "${CMAKE_CURRENT_SOURCE_DIR}/resources")
-configure_file("test_config.h.in" "test_config.h")
-
+configure_file("test_config.hpp.in" "test_config.hpp")
 set(LANCE_CPP_TEST_RESOURCES_HEADER_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 
 function(add_lance_cpp_test TEST_NAME)
