@@ -38,6 +38,8 @@ class TestDataset {
 
   [[nodiscard]] auto CreateEmptyDataset() const -> Dataset;
 
+  [[nodiscard]] auto GetDatasetPath() const -> std::string_view { return dataset_path_; }
+
  protected:
   [[nodiscard]] virtual auto GetSchema() const -> ArrowSchema = 0;
 

@@ -47,10 +47,10 @@ class LanceDatasetTest : public ::testing::Test {
 
 TEST_F(LanceDatasetTest, TestCreateEmptyDataset) {
   std::string test_path = GetTempPath("empty_dataset");
-  SimpleTestDataset test_dataset(test_path);
+  SimpleTestDataset test_dataset(std::move(test_path));
   auto _ = test_dataset.CreateEmptyDataset();
 
-  auto result = Dataset::Open(test_path, {});
+  auto result = Dataset::Open(test_dataset.GetDatasetPath(), {});
   ASSERT_TRUE(result.has_value());
 }
 
