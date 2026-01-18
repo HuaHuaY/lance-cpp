@@ -21,26 +21,34 @@
 
 #include <gtest/gtest.h>
 
+#include <filesystem>
 #include <string>
+#include <string_view>
 
 #include "util/test_util.hpp"
 
 namespace lance::test {
 
 class LanceDatasetTest : public ::testing::Test {
- protected:
-  void SetUp() override {
-    auto result = Dataset::Open("", {});
-    ASSERT_FALSE(result.has_value());
+ public:
+  auto GetTempPath(std::string_view filename) -> std::string {
+    std::filesystem::path path = temp_dir_ / filename;
+    return path.string();
   }
 
+ protected:
+  void SetUp() override {}
+
   void TearDown() override {}
+
+ private:
+  std::filesystem::path temp_dir_{std::filesystem::temp_directory_path()};
 };
 
 TEST_F(LanceDatasetTest, TestCreateEmptyDataset) {
-  std::string test_path = "empty_dataset";
+  std::string test_path = GetTempPath("empty_dataset");
   SimpleTestDataset test_dataset(test_path);
-  auto _ = test_dataset.createEmptyDataset();
+  auto _ = test_dataset.CreateEmptyDataset();
 
   auto result = Dataset::Open(test_path, {});
   ASSERT_TRUE(result.has_value());

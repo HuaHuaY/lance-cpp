@@ -36,7 +36,7 @@ class TestDataset {
  public:
   explicit TestDataset(std::string dataset_path);
 
-  [[nodiscard]] auto createEmptyDataset() const -> Dataset;
+  [[nodiscard]] auto CreateEmptyDataset() const -> Dataset;
 
  protected:
   [[nodiscard]] virtual auto GetSchema() const -> ArrowSchema = 0;

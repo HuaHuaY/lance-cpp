@@ -42,7 +42,7 @@ auto GetResourcePath(std::string_view filename) -> std::string {
 
 TestDataset::TestDataset(std::string dataset_path) : dataset_path_(std::move(dataset_path)) {}
 
-auto TestDataset::createEmptyDataset() const -> Dataset {
+auto TestDataset::CreateEmptyDataset() const -> Dataset {
   ArrowSchema schema = GetSchema();
   Result<Dataset> ret = Dataset::Create(dataset_path_, schema);
   assert(ret.has_value());
@@ -50,7 +50,7 @@ auto TestDataset::createEmptyDataset() const -> Dataset {
 }
 
 auto SimpleTestDataset::GetSchema() const -> ArrowSchema {
-  static auto createSchema = [](ArrowSchema& schema) -> ArrowErrorCode {
+  static auto create_schema = [](ArrowSchema& schema) -> ArrowErrorCode {
     NANOARROW_RETURN_NOT_OK(ArrowSchemaSetTypeStruct(&schema, 2));
     NANOARROW_RETURN_NOT_OK(ArrowSchemaInitFromType(schema.children[0], NANOARROW_TYPE_INT32));
     NANOARROW_RETURN_NOT_OK(ArrowSchemaSetName(schema.children[0], "id"));
@@ -60,7 +60,7 @@ auto SimpleTestDataset::GetSchema() const -> ArrowSchema {
   };
   static ArrowSchema schema = []() -> ArrowSchema {
     ArrowSchema schema;
-    NANOARROW_ASSERT_OK(createSchema(schema));  // NOLINT(modernize-use-std-print)
+    NANOARROW_ASSERT_OK(create_schema(schema));  // NOLINT(modernize-use-std-print)
     return schema;
   }();
   return schema;
