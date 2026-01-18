@@ -17,7 +17,7 @@
 
 fetchcontent_declare(Corrosion
                      GIT_REPOSITORY https://github.com/corrosion-rs/corrosion.git
-                     GIT_TAG v0.6.0)
+                     GIT_TAG v0.6.1)
 fetchcontent_makeavailable(Corrosion)
 
 corrosion_import_crate(MANIFEST_PATH Cargo.toml)
