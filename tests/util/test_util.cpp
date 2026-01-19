@@ -27,7 +27,7 @@
 #include "lance/dataset.hpp"
 #include "nanoarrow/common/inline_types.h"
 #include "nanoarrow/nanoarrow.h"
-#include "test_config.h"
+#include "test_config.hpp"
 
 namespace lance::test {
 
