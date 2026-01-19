@@ -64,3 +64,12 @@ endfunction()
 
 resolve_dependency(nanoarrow "${LANCE_CPP_NANOARROW_URL}"
                    "${LANCE_CPP_NANOARROW_BUILD_SHA512}")
+foreach(dependency ${LANCE_CPP_VENDOR_DEPENDENCIES})
+  get_target_property(realname ${dependency} ALIASED_TARGET)
+  if(NOT realname)
+    set(realname ${dependency})
+  endif()
+  install(TARGETS ${realname}
+          EXPORT LanceCppTargets
+          DESTINATION ${LANCE_CPP_INSTALL_LIBDIR})
+endforeach()
