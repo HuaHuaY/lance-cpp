@@ -21,6 +21,7 @@
 
 #include <cassert>
 #include <cstring>
+#include <format>
 #include <string>
 #include <string_view>
 
@@ -49,21 +50,62 @@ auto TestDataset::CreateEmptyDataset() const -> Dataset {
   return std::move(*ret);
 }
 
+auto TestDataset::Write(int row_count) const -> Dataset {
+  ArrowArrayStream stream = CreateDataStream(row_count);
+  Result<Dataset> ret = Dataset::Append(dataset_path_, stream);
+  assert(ret.has_value());
+  return std::move(*ret);
+}
+
 auto SimpleTestDataset::GetSchema() const -> ArrowSchema {
-  static auto create_schema = [](ArrowSchema& schema) -> ArrowErrorCode {
-    NANOARROW_RETURN_NOT_OK(ArrowSchemaSetTypeStruct(&schema, 2));
-    NANOARROW_RETURN_NOT_OK(ArrowSchemaInitFromType(schema.children[0], NANOARROW_TYPE_INT32));
-    NANOARROW_RETURN_NOT_OK(ArrowSchemaSetName(schema.children[0], "id"));
-    NANOARROW_RETURN_NOT_OK(ArrowSchemaInitFromType(schema.children[1], NANOARROW_TYPE_STRING));
-    NANOARROW_RETURN_NOT_OK(ArrowSchemaSetName(schema.children[1], "name"));
+  static auto create_schema = [](ArrowSchema& out) -> ArrowErrorCode {
+    NANOARROW_RETURN_NOT_OK(ArrowSchemaSetTypeStruct(&out, 2));
+    NANOARROW_RETURN_NOT_OK(ArrowSchemaInitFromType(out.children[0], NANOARROW_TYPE_INT32));
+    NANOARROW_RETURN_NOT_OK(ArrowSchemaSetName(out.children[0], "id"));
+    NANOARROW_RETURN_NOT_OK(ArrowSchemaInitFromType(out.children[1], NANOARROW_TYPE_STRING));
+    NANOARROW_RETURN_NOT_OK(ArrowSchemaSetName(out.children[1], "name"));
     return NANOARROW_OK;
   };
-  static ArrowSchema schema = []() -> ArrowSchema {
+  static ArrowSchema base_schema = []() -> ArrowSchema {
     ArrowSchema schema;
     NANOARROW_ASSERT_OK(create_schema(schema));  // NOLINT(modernize-use-std-print)
     return schema;
   }();
-  return schema;
+
+  ArrowSchema copy;
+  NANOARROW_ASSERT_OK(ArrowSchemaDeepCopy(&base_schema, &copy));  // NOLINT(modernize-use-std-print)
+  return copy;
+}
+
+auto SimpleTestDataset::CreateDataStream(int row_count) const -> ArrowArrayStream {
+  ArrowArrayStream stream;
+  ArrowSchema schema = GetSchema();
+
+  auto init_array_stream = [&stream, &schema, row_count]() -> ArrowErrorCode {
+    ArrowArray array;
+    NANOARROW_RETURN_NOT_OK(ArrowArrayInitFromSchema(&array, &schema, nullptr));
+
+    ArrowArray* id_array = array.children[0];
+    ArrowArray* name_array = array.children[1];
+
+    NANOARROW_RETURN_NOT_OK(ArrowArrayStartAppending(&array));
+    for (int i = 0; i < row_count; ++i) {
+      NANOARROW_RETURN_NOT_OK(ArrowArrayAppendInt(id_array, i));
+      std::string name = std::format("Person {}", i);
+      ArrowStringView name_view = {name.c_str(), static_cast<int64_t>(name.size())};
+      NANOARROW_RETURN_NOT_OK(ArrowArrayAppendString(name_array, name_view));
+      NANOARROW_RETURN_NOT_OK(ArrowArrayFinishElement(&array));
+    }
+    NANOARROW_RETURN_NOT_OK(ArrowArrayFinishBuildingDefault(&array, nullptr));
+
+    NANOARROW_RETURN_NOT_OK(ArrowBasicArrayStreamInit(&stream, &schema, 1));
+    ArrowBasicArrayStreamSetArray(&stream, 0, &array);
+
+    return NANOARROW_OK;
+  };
+
+  NANOARROW_ASSERT_OK(init_array_stream());  // NOLINT(modernize-use-std-print)
+  return stream;
 }
 
 }  // namespace lance::test

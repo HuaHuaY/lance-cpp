@@ -23,6 +23,7 @@
 #include <string_view>
 
 struct ArrowSchema;
+struct ArrowArrayStream;
 
 namespace lance {
 class Dataset;
@@ -38,10 +39,14 @@ class TestDataset {
 
   [[nodiscard]] auto CreateEmptyDataset() const -> Dataset;
 
+  [[nodiscard]] auto Write(int row_count) const -> Dataset;
+
   [[nodiscard]] auto GetDatasetPath() const -> std::string_view { return dataset_path_; }
 
  protected:
   [[nodiscard]] virtual auto GetSchema() const -> ArrowSchema = 0;
+
+  [[nodiscard]] virtual auto CreateDataStream(int row_count) const -> ArrowArrayStream = 0;
 
  private:
   std::string dataset_path_;
@@ -53,6 +58,8 @@ class SimpleTestDataset : public TestDataset {
 
  protected:
   [[nodiscard]] auto GetSchema() const -> ArrowSchema override;
+
+  [[nodiscard]] auto CreateDataStream(int row_count) const -> ArrowArrayStream override;
 };
 
 }  // namespace lance::test

@@ -19,5 +19,29 @@
 
 #pragma once
 
-struct ArrowArrayStream;
-struct ArrowSchema;
+#include <chrono>
+#include <cstdint>
+
+#include "lance/export.hpp"
+
+namespace lance {
+
+class LANCE_EXPORT Version {
+ public:
+  using TimePoint = std::chrono::time_point<std::chrono::system_clock, std::chrono::nanoseconds>;
+
+  Version(uint64_t id, int64_t timestamp_nanos)
+      : id_(id),
+        timestamp_(std::chrono::time_point<std::chrono::system_clock>(
+            std::chrono::nanoseconds(timestamp_nanos))) {}
+
+  [[nodiscard]] auto GetId() const -> uint64_t { return id_; }
+
+  [[nodiscard]] auto GetTimestamp() const -> TimePoint { return timestamp_; }
+
+ private:
+  uint64_t id_;
+  TimePoint timestamp_;
+};
+
+}  // namespace lance
